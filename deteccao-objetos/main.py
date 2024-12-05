@@ -3,16 +3,13 @@ import numpy as np
 
 TINY = False
 
-# Configurações do modelo YOLOv3 ou YOLOv3-tiny
 ARQUIVO_CFG = "deteccao-objetos/yolov3{}.cfg".format("-tiny" if TINY else "")
 ARQUIVO_PESOS = "deteccao-objetos/yolov3{}.weights".format("-tiny" if TINY else "")
 ARQUIVO_CLASSES = "deteccao-objetos/coco{}.names".format("-tiny" if TINY else "")
 
-# carregar nomes dasa classes
 with open(ARQUIVO_CLASSES, "r") as arquivo:
     CLASSES = [linha.strip() for linha in arquivo.readlines()]
 
-# gerar cores diferentes para cada classe
 CORES = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 def carregar_modelo_pretreinado():
@@ -35,7 +32,50 @@ def detectar_objetos(frame, modelo):
     saidas = modelo.forward(camadas_saida)
     return saidas
 
+def cor_predominante(frame, x, y, largura, altura):
+    """Identifica a cor predominante em uma região do frame."""
+    roi = frame[y:y+altura, x:x+largura]
+    if roi.size == 0:
+        return "indefinida"
+
+    # Converter a ROI para HSV
+    hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+
+    # Calcular a média de cada canal HSV na ROI
+    media_h = int(np.mean(hsv_roi[:, :, 0]))  # Hue
+    media_s = int(np.mean(hsv_roi[:, :, 1]))  # Saturação
+    media_v = int(np.mean(hsv_roi[:, :, 2]))  # Brilho
+
+    # Definir cores com base no valor médio de Hue
+    if media_s < 40:  # Saturação muito baixa
+        if media_v > 200:
+            return "branco"
+        elif media_v < 50:
+            return "preto"
+        else:
+            return "cinza"
+
+    if 0 <= media_h < 15 or 165 <= media_h <= 180:
+        return "vermelho"
+    elif 15 <= media_h < 25:
+        return "laranja"
+    elif 25 <= media_h < 35:
+        return "amarelo"
+    elif 35 <= media_h < 85:
+        return "verde"
+    elif 85 <= media_h < 105:
+        return "ciano"
+    elif 105 <= media_h < 135:
+        return "azul"
+    elif 135 <= media_h < 165:
+        return "roxo"
+    else:
+        return "indefinida"
+    
+    
+
 def desenhar_deteccoes(frame, deteccoes, limiar=0.5):
+    """Desenha caixas e identifica cores apenas para objetos classificados como 'copo'."""
     (altura, largura) = frame.shape[:2]
     caixas = []
     confiancas = []
@@ -46,7 +86,9 @@ def desenhar_deteccoes(frame, deteccoes, limiar=0.5):
             pontuacoes = deteccao[5:]
             id_classe = np.argmax(pontuacoes)
             confianca = pontuacoes[id_classe]
-            if confianca > limiar:
+
+            # Verifica se o objeto é um copo e atende ao limite de confiança
+            if confianca > limiar and CLASSES[id_classe] == "copo":  # Verifica se a classe é copo
                 caixa = deteccao[0:4] * np.array([largura, altura, largura, altura])
                 (centroX, centroY, largura_caixa, altura_caixa) = caixa.astype("int")
                 x = int(centroX - (largura_caixa / 2))
@@ -61,10 +103,14 @@ def desenhar_deteccoes(frame, deteccoes, limiar=0.5):
         for i in indices.flatten():
             (x, y) = (caixas[i][0], caixas[i][1])
             (largura_caixa, altura_caixa) = (caixas[i][2], caixas[i][3])
-            cor = [int(c) for c in CORES[ids_classes[i]]]
-            cv2.rectangle(frame, (x, y), (x + largura_caixa, y + altura_caixa), cor, 2)
-            texto = f"{CLASSES[ids_classes[i]]}: {confiancas[i]:.2f}"
-            cv2.putText(frame, texto, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, cor, 2)
+
+            # Determinar a cor predominante na ROI
+            cor = cor_predominante(frame, x, y, largura_caixa, altura_caixa)
+
+            # Desenhar a caixa ao redor do copo
+            cv2.rectangle(frame, (x, y), (x + largura_caixa, y + altura_caixa), (0, 255, 0), 2)  # Verde
+            texto = f"Copo: {cor}"
+            cv2.putText(frame, texto, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)  # Verde
 
 def main():
     print("Inicializando o detector de objetos...")
@@ -86,7 +132,6 @@ def main():
     cv2.namedWindow('Detecta Objetos')
     if TINY:
         cv2.createTrackbar('Limiar de Confiança', 'Detecta Objetos', int(limiar_confianca * 100), 100, ajustar_limiar)
-
     try:
         while True:
             ret, frame = captura_video.read()
