@@ -1,78 +1,33 @@
-# Projeto de Visão Computacional
+YOLOv3 com OpenCV em Python
+Este repositório contém um exemplo de uso do modelo YOLOv3 para detecção de objetos em tempo real utilizando OpenCV e Python. O código inclui o carregamento do modelo pré-treinado YOLOv3, a configuração do OpenCV DNN, e a realização da detecção de objetos em tempo real a partir de uma captura de vídeo (por exemplo, webcam).
 
-Projeto criado para disciplina Fundamentos de Inteligência Artificial (FIA) - Graduação. Prof. Pablo De Chiaro
+Links para Download de Modelos YOLO
+YOLOv3:
+Arquivo de configuração: yolov3.cfg
+Arquivo de pesos: yolov3.weights
+Arquivo de nomes das classes: coco.names
+YOLOv3-tiny:
+Arquivo de configuração: yolov3-tiny.cfg
+Arquivo de pesos: yolov3-tiny.weights
+Arquivo de nomes das classes: coco.names
+Descrição do Código
+Este código faz o seguinte:
 
-Este projeto configura um ambiente virtual Python e instala as bibliotecas necessárias para um projeto de Visão Computacional.
+Carrega o modelo YOLOv3 pré-treinado: Utiliza a função cv2.dnn.readNetFromDarknet para carregar a configuração (.cfg) e os pesos (.weights) do modelo YOLOv3.
 
-## Configuração do Ambiente Virtual
+Pré-processa os frames de vídeo: Redimensiona e normaliza os frames capturados para que possam ser usados como entrada para o modelo YOLOv3.
 
-### Passos para criar e ativar um ambiente virtual:
+Detecta objetos nos frames: Utiliza o modelo carregado para detectar objetos nos frames pré-processados.
 
-1. **Criar o ambiente virtual:**
+Desenha as detecções nos frames: Desenha caixas delimitadoras ao redor de copos detectados, juntamente com a classe e a confiança da detecção.
 
-   ```bash
-   python -m venv env-visao
-   ```
+Localiza copo e informa cor: cor_predominante fornece a análise de cor que é usada por desenhar_deteccoes para descrever visualmente os copos detectados.
 
-2. **Ativar o ambiente virtual:**
+COCO
+Common Objects in Context: https://cocodataset.org/#overview
 
-   No macOS e Linux:
+DNN (Deep Neural Network) no OpenCV
+A DNN (Deep Neural Network) é uma biblioteca no OpenCV que permite o uso de redes neurais profundas para diversas tarefas de visão computacional, como classificação de imagens, detecção de objetos, e segmentação semântica. A API DNN do OpenCV oferece uma interface para carregar e executar modelos treinados em diferentes frameworks de deep learning, como Caffe, TensorFlow, PyTorch e Darknet. Ela suporta tanto a CPU quanto a GPU, tornando-a flexível e eficiente para aplicações em tempo real.
 
-   ```bash
-   source ./env-visao/bin/activate
-   ```
-
-   No Windows:
-
-   ```bash
-   .\env-visao\Scripts\activate
-   ```
-
-## Instalação de Dependências
-
-Certifique-se de que seu ambiente virtual esteja ativado. Instale as dependências listadas no arquivo `requirements.txt`:
-
-```bash
-pip install -r requirements.txt
-```
-
-### Conteúdo do arquivo `requirements.txt`:
-
-```text
-numpy==2.0.0
-opencv-python==4.10.0.84
-```
-
-## Verificação da Instalação
-
-Para verificar se as bibliotecas foram instaladas corretamente, você pode executar o seguinte comando em um terminal Python:
-
-```python
-import cv2
-import numpy as np
-
-print(f"OpenCV version: {cv2.__version__}")
-print(f"NumPy version: {np.__version__}")
-```
-
-## Sugestão de Estudos por Diretórios
-
-1. vagas
-2. reconhecimento-faces (use primeiro o `verifica_cameras.py`)
-3. deteccao-objetos
-4. rastreio-pessoas
-
-## Desativação do Ambiente Virtual
-
-Quando terminar de trabalhar no projeto, você pode desativar o ambiente virtual com o comando:
-
-```bash
-deactivate
-```
-
-## Referências e Leitura
-
-- (Ref) YoloV3: [yolov3](https://pjreddie.com/darknet/yolo/)
-- (Leitura) SSD MobileNet: [SSD MobileNetV2](https://arxiv.org/abs/1512.02325)
-- (Leitura) SSD MobileNet: [SSD MobileNetV2 Object Detection](https://medium.com/@techmayank2000/object-detection-using-ssd-mobilenetv2-using-tensorflow-api-can-detect-any-single-class-from-31a31bbd0691)
-- (Ref) COCO: [Common Objects in Context](https://cocodataset.org/#overview)
+Darknet
+Darknet é uma estrutura de rede neural de código aberto escrita em C e CUDA. Ela é utilizada principalmente para a detecção de objetos em tempo real. YOLO (You Only Look Once) é uma das implementações mais conhecidas que utilizam Darknet. YOLO é altamente eficiente e capaz de detectar objetos em uma única passagem pela rede neural, ao contrário de métodos tradicionais que requerem múltiplas passagens. Darknet é conhecido por seu desempenho rápido e capacidade de ser executado em tempo real em GPUs.
