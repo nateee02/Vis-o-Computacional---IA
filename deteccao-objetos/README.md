@@ -32,6 +32,41 @@ Este código faz o seguinte:
 4. **Desenha as detecções nos frames**:
    Desenha caixas delimitadoras ao redor dos objetos detectados, juntamente com a classe e a confiança da detecção.
 
+### O que foi adaptado
+
+Usando o arquivo disponibilizado em aula detecção_objetos, para execução da ideia deste projeto foram implementadas às funções cor_predominante e desenhar_deteccoes.
+
+
+### Função cor_predominante
+Analisa a cor predominante em uma região específica de uma imagem (chamada de ROI - Região de Interesse).
+
+**Extrai a região de interesse (ROI):** Usa as coordenadas (x, y, largura, altura) para selecionar a área da imagem onde a cor será analisada.
+
+**Verifica se a ROI é válida:** Retorna "indefinida" se a ROI não contém pixels.
+
+**Converte para espaço de cor HSV:** Transforma a região de cor BGR (usada pelo OpenCV) em HSV, que facilita a análise de tonalidades (Hue), saturação e brilho.
+
+**Calcula a média dos canais HSV:** Obtém os valores médios de tonalidade (Hue), saturação (Saturation) e brilho (Value) na região.
+
+**Classifica a cor predominante:** Se a saturação for baixa, classifica como branco, preto ou cinza dependendo do brilho. Caso contrário, usa o valor de Hue para identificar cores como vermelho, azul, amarelo, etc.
+
+**Retorna a cor identificada:** Baseada nos valores médios de HSV.
+
+
+### Função desenhar_deteccoes
+
+Esta função detecta objetos do tipo "copo" em um frame e desenha uma caixa ao redor deles, indicando a cor predominante.
+
+**Inicializa listas para dados de detecções:** Prepara estruturas para armazenar caixas delimitadoras, níveis de confiança e IDs de classes detectadas.
+
+**Percorre as detecções:** Obtém a classe mais provável de cada objeto e sua confiança. Filtra para considerar apenas objetos classificados como "copo" e que superam o limiar de confiança especificado.
+
+**Calcula as caixas delimitadoras:** Converte as coordenadas normalizadas do modelo YOLO para pixels, gerando as dimensões (x, y, largura, altura) de cada copo.
+
+**Aplica supressão de não-máximos:** Remove sobreposições excessivas entre caixas para manter apenas as melhores detecções.
+
+**Determina a cor predominante:** Para cada copo detectado, usa a função cor_predominante para identificar a cor da região correspondente.
+
 ### COCO
 
 Common Objects in Context: https://cocodataset.org/#overview
