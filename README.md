@@ -2,7 +2,7 @@
 
 Projeto criado para disciplina Fundamentos de Inteligência Artificial (FIA) - Graduação. Prof. Pablo De Chiaro
 
-Este projeto configura um ambiente virtual Python e instala as bibliotecas necessárias para um projeto de Visão Computacional.
+O projeto configura um ambiente virtual em python e instala dependências necessárias para p Projeto de Visão Computacional usando o exemplo 'detecção de objetos' que vai utilizar a webcam do computador para detectar copos e informar a cor predominante.
 
 ## Configuração do Ambiente Virtual
 
@@ -55,13 +55,6 @@ print(f"OpenCV version: {cv2.__version__}")
 print(f"NumPy version: {np.__version__}")
 ```
 
-## Sugestão de Estudos por Diretórios
-
-1. vagas
-2. reconhecimento-faces (use primeiro o `verifica_cameras.py`)
-3. deteccao-objetos
-4. rastreio-pessoas
-
 ## Desativação do Ambiente Virtual
 
 Quando terminar de trabalhar no projeto, você pode desativar o ambiente virtual com o comando:
@@ -69,10 +62,3 @@ Quando terminar de trabalhar no projeto, você pode desativar o ambiente virtual
 ```bash
 deactivate
 ```
-
-## Referências e Leitura
-
-- (Ref) YoloV3: [yolov3](https://pjreddie.com/darknet/yolo/)
-- (Leitura) SSD MobileNet: [SSD MobileNetV2](https://arxiv.org/abs/1512.02325)
-- (Leitura) SSD MobileNet: [SSD MobileNetV2 Object Detection](https://medium.com/@techmayank2000/object-detection-using-ssd-mobilenetv2-using-tensorflow-api-can-detect-any-single-class-from-31a31bbd0691)
-- (Ref) COCO: [Common Objects in Context](https://cocodataset.org/#overview)
